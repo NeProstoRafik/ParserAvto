@@ -1,0 +1,15 @@
+﻿@using ParserAvto.Core
+@model List<Avto>
+<div class="row">
+    @foreach (var p in Model)
+    {
+        //partial
+        <partial name="_cart" model="p" />
+    }
+
+    @if(true)
+    {
+    <a asp-action="PreviousPage">предыдущая</a>
+ 
+    }
+<a asp-action="NextPage">следущая</a> 

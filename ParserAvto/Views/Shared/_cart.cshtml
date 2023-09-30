@@ -1,0 +1,35 @@
+﻿@using ParserAvto.Core
+@model  Avto
+
+    
+    <!-- Карточка товара -->
+    <div class="card">
+        <!-- Верхняя часть -->
+        <div class="card__top">
+            <!-- Изображение-ссылка товара -->
+            <a href="#" class="card__image">
+            <img src="@Model.Image"
+                     alt="car" />
+            </a>
+            <!-- Скидка на товар -->
+            @*<div class="card__label">-10%</div>*@
+        </div>
+        <!-- Нижняя часть -->
+        <div class="card__bottom">
+            <!-- Цены на товар (с учетом скидки и без)-->
+        <div class="text-secondary"> @Model.Name</div>
+
+        <div class="text-danger"> @Model.Price</div>
+
+           @* <div class="card__price card__price--common">@Model.Price</div>*@
+          
+            <!-- Ссылка-название товара -->
+        @Model.Description
+        <a href="@Model.Url" class="card__title">            
+                <button class="card__add">На сайт</button>
+            </a>
+            <!-- Кнопка добавить в корзину -->
+          
+        </div>
+    </div>
+   
