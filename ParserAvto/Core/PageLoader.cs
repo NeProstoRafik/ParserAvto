@@ -9,8 +9,7 @@ namespace ParserAvto.Core
     public class PageLoader
     {
         private readonly HttpClient _httpClient;
-
-        readonly string _url = AvtoSettings.SecondUrl;
+       
         private HtmlParser domParser = new HtmlParser();
         public PageLoader(HttpClient httpClient)
         {
@@ -23,7 +22,7 @@ namespace ParserAvto.Core
             if (pageNumber >1)
             {
 
-                currentUrl = _url.Replace("current", pageNumber.ToString());
+                currentUrl = settings.SecondUrl.Replace("current", pageNumber.ToString());
             }
 
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);

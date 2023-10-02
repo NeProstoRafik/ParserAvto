@@ -54,7 +54,7 @@ namespace ParserAvto.Core.AvtoParser
                     avto.Description += discriptionElement[i].TextContent + " ";
                 }
 
-                avto.Price = item.QuerySelector(" div.css-1dkhqyq.e1f2m3x80 > div:nth-child(1) > div > div > span > span").TextContent;
+                avto.Price = item.QuerySelector(" div.css-1dkhqyq.e1f2m3x80 > div:nth-child(1) > div > div > span > span")?.TextContent;
 
                 List.Add(avto);
             }
