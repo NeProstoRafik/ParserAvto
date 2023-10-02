@@ -40,23 +40,36 @@ namespace ParserAvto.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
-        public async Task<IActionResult> GetPage()
+        public async Task<IActionResult> GetPage(int page=1)
         {
-          var  document=await avtoParser.HtmlLoad( settings);
-            var ListAvto = avtoParser.Parse(document);
-            return View(ListAvto);
+
+            var ListAvto = new List<Avto>();
+
+            var intNumber = new PageInfo { PageNumber = page };
+
+            var document = await pageLoader.GetDocument(page, settings);
+        
+            ListAvto = avtoParser.Parse(document);            
+
+            var pageLoader1 = new PaginationViewModel {
+                PageInfo = intNumber,
+                Avtos = ListAvto
+            };
+           
+           
+            return View(pageLoader1);
         }
-        public async Task<IActionResult> NextPage()
-        {
-            var document = await pageLoader.GetFromPageId();
-            var ListAvto = avtoParser.Parse(document);
-            return View(ListAvto);
-        }
-        public async Task<IActionResult> PreviousPage()
-        {
-            var document = await pageLoader.GetFromPreviousPageId();
-            var ListAvto = avtoParser.Parse(document);
-            return View(ListAvto);
-        }
+        //public async Task<IActionResult> NextPage()
+        //{
+        //    var document = await pageLoader.GetFromPageId();
+        //    var ListAvto = avtoParser.Parse(document);
+        //    return View(ListAvto);
+        //}
+        //public async Task<IActionResult> PreviousPage()
+        //{
+        //    var document = await pageLoader.GetFromPreviousPageId();
+        //    var ListAvto = avtoParser.Parse(document);
+        //    return View(ListAvto);
+        //}
     }
 }

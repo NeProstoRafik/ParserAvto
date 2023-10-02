@@ -2,6 +2,7 @@
 using AngleSharp.Html.Parser;
 using ParserAvto.Core.AvtoParser;
 using System.Net.Http;
+using System.Text;
 
 namespace ParserAvto.Core
 {
@@ -15,31 +16,32 @@ namespace ParserAvto.Core
         {
             _httpClient = httpClient;
         }
-
-        public async Task<IHtmlDocument> GetFromPageId()
+      
+        public async Task<IHtmlDocument> GetDocument(int pageNumber, IParserSettings settings)
         {
-
-            var pageNumber = ++AvtoSettings.PageId;
-            return await GetDocument(pageNumber);
-        }
-        public async Task<IHtmlDocument> GetFromPreviousPageId()
-        {
-            var pageNumber = --AvtoSettings.PageId;
-            return await GetDocument(pageNumber);
-        }
-        public async Task<IHtmlDocument> GetDocument(int pageNumber)
-        {
-            var currentUrl = _url.Replace("current", pageNumber.ToString());
-            var response = await _httpClient.GetAsync(currentUrl);
-            string source = null;
-            if (response != null)
+            var currentUrl=settings.BaseUrl;
+            if (pageNumber >1)
             {
-                source = await response.Content.ReadAsStringAsync();
 
+                currentUrl = _url.Replace("current", pageNumber.ToString());
             }
-            var document = await domParser.ParseDocumentAsync(source);
-            _httpClient.Dispose();
+
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+            var response = await _httpClient.GetStringAsync(currentUrl);
+            var domParser = new HtmlParser();
+            var document = await domParser.ParseDocumentAsync(response);
+
             return document;
+
+            //var response = await _httpClient.GetAsync(currentUrl);
+            //string source = null;
+            //if (response != null)
+            //{
+            //    source = await response.Content.ReadAsStringAsync();
+            //}
+            //var document = await domParser.ParseDocumentAsync(source);
+
+            //return document;
         }
     }
 }

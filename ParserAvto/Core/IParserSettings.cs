@@ -4,6 +4,6 @@
     {
         public  string BaseUrl { get;  }
         public string Prefix { get; set; }
-        public static string SecondUrl { get;  }
+        public static string SecondUrl { get; } 
     }
 }

@@ -1,5 +1,6 @@
 ﻿using AngleSharp.Html.Dom;
 using AngleSharp.Html.Parser;
+using AngleSharp.Text;
 using ParserAvto.Models;
 using System.Text;
 
@@ -17,16 +18,16 @@ namespace ParserAvto.Core.AvtoParser
         readonly string _url;
 
         private Avto Avto;
-        public async Task<IHtmlDocument> HtmlLoad(IParserSettings settings)
-        {    
-            var url = settings.BaseUrl;
-            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-            var response = await httpClient.GetStringAsync(url);            
-            var domParser = new HtmlParser();
-            var document = await domParser.ParseDocumentAsync(response);
-            httpClient.Dispose();
-            return document;
-        }
+        //public async Task<IHtmlDocument> HtmlLoad(IParserSettings settings)
+        //{    
+        //    var url = settings.BaseUrl;
+        //    Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+        //    var response = await httpClient.GetStringAsync(url);            
+        //    var domParser = new HtmlParser();
+        //    var document = await domParser.ParseDocumentAsync(response);
+        //    httpClient.Dispose();
+        //    return document;
+        //}
         public List<Avto> Parse(IHtmlDocument document)
         {
            
@@ -43,7 +44,7 @@ namespace ParserAvto.Core.AvtoParser
                     avto.Image = imageElement.GetAttribute("data-src");
                   
                 }
-                var nameCar= item.QuerySelector(" div.css-13ocj84.e1icyw250 > div:nth-child(1) > div.css-1wgtb37.e3f4v4l2");
+                var nameCar= item.QuerySelector(" div.css-13ocj84.e1icyw250 > div:nth-child(1) > div.css-1wgtb37.e3f4v4l2>span");
                 if (nameCar != null)
                 {
                     avto.Name = nameCar.TextContent;
@@ -52,7 +53,18 @@ namespace ParserAvto.Core.AvtoParser
                 {
                     avto.Name = "Машина продана";
                 }
-                avto.Description = item.QuerySelector(".css-13ocj84.e1icyw250>div.css-1fe6w6s.e162wx9x0").TextContent;
+               //avto.Description = item.QuerySelector(".css-13ocj84.e1icyw250>div.css-1fe6w6s.e162wx9x0>.css-1l9tp44.e162wx9x0").TextContent;
+                var discriptionElement = item.QuerySelectorAll(".css-13ocj84.e1icyw250>div.css-1fe6w6s.e162wx9x0>.css-1l9tp44.e162wx9x0");
+
+                for (int i = 0; i < discriptionElement.Count(); i++)
+                {
+                    if (i == 5)
+                    {
+                        break;
+                    }
+                    avto.Description += discriptionElement[i].TextContent + " ";
+                }
+
                 avto.Price = item.QuerySelector(" div.css-1dkhqyq.e1f2m3x80 > div:nth-child(1) > div > div > span > span").TextContent;
 
                 List.Add(avto);

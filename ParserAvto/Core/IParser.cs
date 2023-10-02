@@ -5,7 +5,7 @@ namespace ParserAvto.Core
 {
     public interface IParser
     {
-        Task<IHtmlDocument> HtmlLoad(IParserSettings settings);
+       // Task<IHtmlDocument> HtmlLoad(IParserSettings settings);
         List<Avto> Parse(IHtmlDocument document);
     }
 }
