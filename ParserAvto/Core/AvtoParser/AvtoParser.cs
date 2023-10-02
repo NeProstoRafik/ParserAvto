@@ -7,27 +7,13 @@ using System.Text;
 namespace ParserAvto.Core.AvtoParser
 {
     public class AvtoParser : IParser
-    {
+    {  
         private readonly HttpClient httpClient ;
-
         public AvtoParser(HttpClient httpClient)
         {
             this.httpClient = httpClient;
-        }
-
-        readonly string _url;
-
-        private Avto Avto;
-        //public async Task<IHtmlDocument> HtmlLoad(IParserSettings settings)
-        //{    
-        //    var url = settings.BaseUrl;
-        //    Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-        //    var response = await httpClient.GetStringAsync(url);            
-        //    var domParser = new HtmlParser();
-        //    var document = await domParser.ParseDocumentAsync(response);
-        //    httpClient.Dispose();
-        //    return document;
-        //}
+        }          
+     
         public List<Avto> Parse(IHtmlDocument document)
         {
            
@@ -42,7 +28,10 @@ namespace ParserAvto.Core.AvtoParser
                 {
                    // avto.Description = imageElement.GetAttribute("alt");
                     avto.Image = imageElement.GetAttribute("data-src");
-                  
+                    if (avto.Image==null)
+                    {
+                        avto.Image = "https://yandex.ru/images/search?img_url=https%3A%2F%2Fimages.wbstatic.net%2Fbig%2Fnew%2F42720000%2F42725679-1.jpg&lr=54&pos=0&rpt=simage&source=serp&text=картинка%20нет%20фото";
+                    }
                 }
                 var nameCar= item.QuerySelector(" div.css-13ocj84.e1icyw250 > div:nth-child(1) > div.css-1wgtb37.e3f4v4l2>span");
                 if (nameCar != null)
@@ -71,6 +60,15 @@ namespace ParserAvto.Core.AvtoParser
             }
             return List;
         }
-
+        //public async Task<IHtmlDocument> HtmlLoad(IParserSettings settings)
+        //{    
+        //    var url = settings.BaseUrl;
+        //    Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+        //    var response = await httpClient.GetStringAsync(url);            
+        //    var domParser = new HtmlParser();
+        //    var document = await domParser.ParseDocumentAsync(response);
+        //    httpClient.Dispose();
+        //    return document;
+        //}
     }
 }

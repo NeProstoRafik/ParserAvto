@@ -17,32 +17,11 @@
     {
       
         <a href="@Url.Action("GetPage", new { page = Model.PageInfo.PageNumber-1 })">Pr</a>
-        
+      
     }
-    <p> </p> <  >
+    <p> </p> <>
     <a href="@Url.Action("GetPage", new { page = Model.PageInfo.PageNumber+1 })">Next</a>    
 
    
 </div>
 
-@*<div class="pagination-container">
-    @if (Model.PageInfo.PageNumber > 0)
-    {
-        for (int i = 1; i <= 10; i++)
-        {
-            
-            <a href="@Url.Action("GetPage", new { page = i })" class="@(i == Model.PageInfo.PageNumber ? "active" : "")">Next</a>
-        }
-     
-        
-            <a href="@Url.Action("GetPage", new { page = i })" class="@(i == Model.PageInfo.PageNumber ? "active" : "")">pr</a>
-    }
-
-</div>*@
-@*  
-@if(AvtoSettings.PageId>1)
-    {
-    <a asp-action="PreviousPage">предыдущая</a>
- 
-    }
-<a asp-action="NextPage">следущая</a> *@
