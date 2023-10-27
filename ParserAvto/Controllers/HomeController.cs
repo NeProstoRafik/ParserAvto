@@ -1,6 +1,4 @@
-﻿using AngleSharp.Browser;
-using Microsoft.AspNetCore.Mvc;
-using ParserAvto.Core;
+﻿using Microsoft.AspNetCore.Mvc;
 using ParserAvto.Core.AvtoParser;
 using ParserAvto.Models;
 using System.Diagnostics;
@@ -10,19 +8,15 @@ namespace ParserAvto.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        //private readonly Core.IParser parser;
-        private readonly IParserSettings settings;    
-        private readonly AvtoParser avtoParser;
-        private readonly PageLoader pageLoader;
-       
-        public HomeController(ILogger<HomeController> logger, IParserSettings settings, AvtoParser avtoParser, PageLoader pageLoader)
+
+        private readonly ListAvto listAvto;
+
+        public HomeController(ILogger<HomeController> logger, ListAvto listAvto)
         {
             _logger = logger;
-        
-            this.settings = settings;
-            this.avtoParser = avtoParser;
-            this.pageLoader = pageLoader;
-           
+
+
+            this.listAvto = listAvto;
         }
 
         public IActionResult Index()
@@ -40,25 +34,23 @@ namespace ParserAvto.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
-        public async Task<IActionResult> GetPage(int page=1)
+        public async Task<IActionResult> GetPage(int page = 1)
         {
-
-            var ListAvto = new List<Avto>();
-
-            var intNumber = new PageInfo { PageNumber = page };
-
-            var document = await pageLoader.GetDocument(page, settings);
-        
-            ListAvto = avtoParser.Parse(document);            
-
-            var pageLoaderModel = new PaginationViewModel {
-                PageInfo = intNumber,
-                Avtos = ListAvto
+            var pageInfo = new PageInfo
+            {
+                PageNumber = page,
+                CountItems = listAvto.CountFromBd()
             };
-           
-           
+            var list = listAvto.ReadFromBd(page, pageInfo.PageSize);
+
+            var pageLoaderModel = new PaginationViewModel
+            {
+                PageInfo = pageInfo,
+                Avtos = list
+            };
+
             return View(pageLoaderModel);
         }
-        
+
     }
 }

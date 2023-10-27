@@ -16,15 +16,9 @@ namespace ParserAvto.Core
             _httpClient = httpClient;
         }
       
-        public async Task<IHtmlDocument> GetDocument(int pageNumber, IParserSettings settings)
+        public async Task<IHtmlDocument> GetDocument( IParserSettings settings)
         {
-            var currentUrl=settings.BaseUrl;
-            if (pageNumber >1)
-            {
-
-                currentUrl = settings.SecondUrl.Replace("current", pageNumber.ToString());
-            }
-
+            var currentUrl=settings.BaseUrl;           
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             var response = await _httpClient.GetStringAsync(currentUrl);
             var domParser = new HtmlParser();

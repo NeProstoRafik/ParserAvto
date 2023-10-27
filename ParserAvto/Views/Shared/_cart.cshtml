@@ -1,8 +1,7 @@
 ﻿@using ParserAvto.Core
 @model  Avto
 
-    
-    <!-- Карточка товара -->
+<!-- Карточка товара -->
     <div class="card">
         <!-- Верхняя часть -->
         <div class="card__top">
@@ -25,9 +24,12 @@
           
             <!-- Ссылка-название товара -->
         @Model.Description
-        <a href="@Model.Url" class="card__title">            
+
+        <a href="@Model.Url" class="btn btn-primary">на сайт</a>
+
+           @* <a href="@Model.Url" class="card__title">            
                 <button class="card__add">На сайт</button>
-            </a>
+            </a>*@
             <!-- Кнопка добавить в корзину -->
           
         </div>

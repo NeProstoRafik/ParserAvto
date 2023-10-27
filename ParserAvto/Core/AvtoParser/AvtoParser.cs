@@ -1,24 +1,22 @@
 ﻿using AngleSharp.Html.Dom;
-using AngleSharp.Html.Parser;
-using AngleSharp.Text;
+using ParserAvto.Handlers;
 using ParserAvto.Models;
-using System.Text;
 
 namespace ParserAvto.Core.AvtoParser
 {
     public class AvtoParser : IParser
-    {  
-        private readonly HttpClient httpClient ;
-        public AvtoParser(HttpClient httpClient)
+    {
+        private readonly SaveAvtoForDb _saveAvtoForDb;
+
+        public AvtoParser(SaveAvtoForDb saveAvtoForDb)
         {
-            this.httpClient = httpClient;
-        }          
-     
-        public List<Avto> Parse(IHtmlDocument document)
+            _saveAvtoForDb = saveAvtoForDb;
+        }
+
+        public async void Parse(IHtmlDocument document)
         {
-           
-            var List = new List<Avto>();
-            var items = document.QuerySelectorAll("body> div> div.css-1iexluz.e1m0rp603 > div.css-1f36sr9.e1m0rp604 > div.css-0.e1m0rp605 >div.css-1173kvb.eojktn00> div.css-1nvf6xk.eojktn00>div> .css-xb5nz8.e1huvdhj1");//.Where(a => a.ClassName != null && a.ClassName.Contains("")); // Исправлено условие проверки ClassName
+
+            var items = document.QuerySelectorAll("body > div > div.css-1iexluz.e1m0rp603> div.css-chb7it.e1m0rp604 > div.css-0.e1m0rp605 > div.css-1173kvb.eojktn00 > div.css-1nvf6xk.eojktn00> div > .css-xb5nz8.e1huvdhj1");
             foreach (var item in items)
             {
                 Avto avto = new Avto();
@@ -26,14 +24,13 @@ namespace ParserAvto.Core.AvtoParser
                 var imageElement = item.QuerySelector(".css-9xa2an.e17rxqpm0>div.css-ocloca.e1e9ee560>picture>img");
                 if (imageElement != null)
                 {
-                   // avto.Description = imageElement.GetAttribute("alt");
                     avto.Image = imageElement.GetAttribute("data-src");
-                    if (avto.Image==null)
+                    if (avto.Image == null || avto.Image=="#")
                     {
                         avto.Image = "https://yandex.ru/images/search?img_url=https%3A%2F%2Fimages.wbstatic.net%2Fbig%2Fnew%2F42720000%2F42725679-1.jpg&lr=54&pos=0&rpt=simage&source=serp&text=картинка%20нет%20фото";
                     }
                 }
-                var nameCar= item.QuerySelector(" div.css-13ocj84.e1icyw250 > div:nth-child(1) > div.css-1wgtb37.e3f4v4l2>span");
+                var nameCar = item.QuerySelector(" div.css-13ocj84.e1icyw250 > div:nth-child(1) > div.css-1wgtb37.e3f4v4l2>span");
                 if (nameCar != null)
                 {
                     avto.Name = nameCar.TextContent;
@@ -42,7 +39,7 @@ namespace ParserAvto.Core.AvtoParser
                 {
                     avto.Name = "Машина продана";
                 }
-               //avto.Description = item.QuerySelector(".css-13ocj84.e1icyw250>div.css-1fe6w6s.e162wx9x0>.css-1l9tp44.e162wx9x0").TextContent;
+
                 var discriptionElement = item.QuerySelectorAll(".css-13ocj84.e1icyw250>div.css-1fe6w6s.e162wx9x0>.css-1l9tp44.e162wx9x0");
 
                 for (int i = 0; i < discriptionElement.Count(); i++)
@@ -56,10 +53,18 @@ namespace ParserAvto.Core.AvtoParser
 
                 avto.Price = item.QuerySelector(" div.css-1dkhqyq.e1f2m3x80 > div:nth-child(1) > div > div > span > span")?.TextContent;
 
-                List.Add(avto);
+                await _saveAvtoForDb.AddForBD(avto);
+
             }
-            return List;
+
         }
+
+
+
+
+
+
+
         //public async Task<IHtmlDocument> HtmlLoad(IParserSettings settings)
         //{    
         //    var url = settings.BaseUrl;
